@@ -1,0 +1,42 @@
+﻿<Window x:Class="ManagementEmployee.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ManagementEmployee"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="12"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Database connectivity check"
+                   FontSize="18" FontWeight="Bold"/>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center">
+            <Button x:Name="btnTest"
+                    Width="140" Height="36" Margin="0,0,10,0"
+                    Content="Test DB Connection"
+                    Click="btnTest_Click"/>
+            <ProgressBar x:Name="bar" Width="160" Height="6" IsIndeterminate="False" Visibility="Collapsed"
+                         VerticalAlignment="Center" />
+        </StackPanel>
+
+        <Border Grid.Row="4" Padding="12" CornerRadius="8" BorderBrush="#DDD" BorderThickness="1">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                    <Ellipse x:Name="dot" Width="12" Height="12" Fill="Gray" Margin="0,2,8,0"/>
+                    <TextBlock x:Name="txtStatus" Text="Status: Not tested" FontWeight="SemiBold"/>
+                </StackPanel>
+                <TextBlock x:Name="txtDetail" TextWrapping="Wrap"
+                           Foreground="#555"
+                           Text="Click 'Test DB Connection' to verify connectivity."/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
