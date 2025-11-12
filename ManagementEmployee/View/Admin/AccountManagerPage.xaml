@@ -1,0 +1,242 @@
+﻿<Page x:Class="ManagementEmployee.View.Admin.AccountManagerPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d"
+      d:DesignHeight="700" d:DesignWidth="1100"
+      Title="AccountManager">
+
+    <Page.Resources>
+
+        <Style x:Key="DarkBox" TargetType="Control">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Foreground" Value="#EDEBFF"/>
+            <Setter Property="BorderBrush" Value="#3A3D7A"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,6"/>
+        </Style>
+
+        <Style x:Key="DarkTextBox" TargetType="TextBox" BasedOn="{StaticResource DarkBox}">
+            <Setter Property="Background" Value="#1E204D"/>
+        </Style>
+
+        <Style x:Key="DarkCombo" TargetType="ComboBox" BasedOn="{StaticResource DarkBox}">
+            <Setter Property="Background" Value="#1E204D"/>
+        </Style>
+
+        <Style x:Key="DarkDatePicker" TargetType="DatePicker" BasedOn="{StaticResource DarkBox}">
+            <Setter Property="Background" Value="#1E204D"/>
+        </Style>
+
+        <Style x:Key="PillButton" TargetType="Button">
+            <Setter Property="Background" Value="#5fe7c4"/>
+            <Setter Property="Foreground" Value="#0F1024"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Padding" Value="16,6"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="18" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#4ec7a8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="NiceGrid" TargetType="DataGrid">
+            <Setter Property="Background" Value="#14163A"/>
+            <Setter Property="Foreground" Value="#EDEBFF"/>
+            <Setter Property="BorderBrush" Value="#2A2D5F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="RowBackground" Value="#1B1E49"/>
+            <Setter Property="AlternatingRowBackground" Value="#20245A"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="RowHeight" Value="34"/>
+            <Setter Property="ColumnHeaderHeight" Value="38"/>
+        </Style>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#2A2D5F"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderBrush" Value="#2A2D5F"/>
+            <Setter Property="BorderThickness" Value="0,0,1,0"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid Background="#0F1024">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+
+        <DockPanel Grid.Row="0" Margin="8,8,8,0">
+            <TextBlock Text="👥  Employee Manager" Foreground="White" FontSize="20" FontWeight="SemiBold"
+                       VerticalAlignment="Center" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="btnNew" Content="➕  New" Style="{StaticResource PillButton}" Margin="8,0,0,0" Click="btnNew_Click"/>
+                <Button x:Name="btnSave" Content="💾  Save" Style="{StaticResource PillButton}" Margin="8,0,0,0" Background="#6C70D9" Foreground="White" Click="btnSave_Click"/>
+                <Button x:Name="btnCancel" Content="↺  Cancel" Style="{StaticResource PillButton}" Margin="8,0,0,0" Background="#292C66" Foreground="#EDEBFF" Click="btnCancel_Click"/>
+                <Button x:Name="btnDelete" Content="🗑  Delete" Style="{StaticResource PillButton}" Margin="8,0,0,0" Background="#E85A8D" Foreground="White" Click="btnDelete_Click"/>
+            </StackPanel>
+        </DockPanel>
+
+        <!-- Filters -->
+        <Border Grid.Row="1" Margin="8" CornerRadius="12" Background="#14163A" Padding="12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="1.5*"/>
+                    <ColumnDefinition Width="1.2*"/>
+                    <ColumnDefinition Width="1.2*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Họ tên / Email -->
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Name / Position (contains)" Foreground="#B6B8D6" Margin="4,0,0,4"/>
+                    <TextBox x:Name="txtFilterName" Style="{StaticResource DarkTextBox}" TextChanged="AnyFilterChanged"/>
+                </StackPanel>
+
+                <!-- Phòng ban -->
+                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                    <TextBlock Text="Department" Foreground="#B6B8D6" Margin="4,0,0,4"/>
+                    <ComboBox x:Name="cbFilterDept" Style="{StaticResource DarkCombo}" SelectionChanged="AnyFilterChanged"/>
+                </StackPanel>
+
+                <!-- Giới tính -->
+                <StackPanel Grid.Column="2" Margin="10,0,0,0">
+                    <TextBlock Text="Gender" Foreground="#B6B8D6" Margin="4,0,0,4"/>
+                    <ComboBox x:Name="cbFilterGender" Style="{StaticResource DarkCombo}" SelectionChanged="AnyFilterChanged">
+                        <ComboBoxItem Content="All" Tag="" IsSelected="True"/>
+                        <ComboBoxItem Content="Male" Tag="M"/>
+                        <ComboBoxItem Content="Female" Tag="F"/>
+                        <ComboBoxItem Content="Other" Tag="O"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- Lương min -->
+                <StackPanel Grid.Column="3" Margin="10,0,0,0">
+                    <TextBlock Text="Salary Min" Foreground="#B6B8D6" Margin="4,0,0,4"/>
+                    <TextBox x:Name="txtSalaryMin" Style="{StaticResource DarkTextBox}" PreviewTextInput="NumericOnly" TextChanged="AnyFilterChanged"/>
+                </StackPanel>
+
+                <!-- Lương max -->
+                <StackPanel Grid.Column="4" Margin="10,0,0,0">
+                    <TextBlock Text="Salary Max" Foreground="#B6B8D6" Margin="4,0,0,4"/>
+                    <TextBox x:Name="txtSalaryMax" Style="{StaticResource DarkTextBox}" PreviewTextInput="NumericOnly" TextChanged="AnyFilterChanged"/>
+                </StackPanel>
+
+                <!-- Ngày vào làm từ -->
+                <StackPanel Grid.Column="5" Margin="10,0,0,0">
+                    <TextBlock Text="Hire Date From" Foreground="#B6B8D6" Margin="4,0,0,4"/>
+                    <DatePicker x:Name="dpHireFrom" Style="{StaticResource DarkDatePicker}" SelectedDateChanged="AnyFilterChanged"/>
+                </StackPanel>
+
+                <!-- Ngày vào làm đến -->
+                <StackPanel Grid.Column="6" Margin="10,0,0,0">
+                    <TextBlock Text="Hire Date To" Foreground="#B6B8D6" Margin="4,0,0,4"/>
+                    <DatePicker x:Name="dpHireTo" Style="{StaticResource DarkDatePicker}" SelectedDateChanged="AnyFilterChanged"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+
+        <Grid Grid.Row="2" Margin="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="360"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Form -->
+            <Border Grid.Column="0" Background="#14163A" CornerRadius="12" Padding="12">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Employee detail" Foreground="White" FontWeight="SemiBold" FontSize="16"/>
+
+                        <TextBlock Text="Full Name" Foreground="#B6B8D6" Margin="0,12,0,4"/>
+                        <TextBox x:Name="txtFullName" Style="{StaticResource DarkTextBox}"/>
+
+                        <TextBlock Text="Date of Birth" Foreground="#B6B8D6" Margin="0,8,0,4"/>
+                        <DatePicker x:Name="dpDob" Style="{StaticResource DarkDatePicker}"/>
+
+                        <TextBlock Text="Gender" Foreground="#B6B8D6" Margin="0,8,0,4"/>
+                        <ComboBox x:Name="cbGender" Style="{StaticResource DarkCombo}">
+                            <ComboBoxItem Content="Male" Tag="M"/>
+                            <ComboBoxItem Content="Female" Tag="F"/>
+                            <ComboBoxItem Content="Other" Tag="O"/>
+                        </ComboBox>
+
+                        <TextBlock Text="Address" Foreground="#B6B8D6" Margin="0,8,0,4"/>
+                        <TextBox x:Name="txtAddress" Style="{StaticResource DarkTextBox}"/>
+
+                        <TextBlock Text="Phone" Foreground="#B6B8D6" Margin="0,8,0,4"/>
+                        <TextBox x:Name="txtPhone" Style="{StaticResource DarkTextBox}"/>
+
+                        <TextBlock Text="Department" Foreground="#B6B8D6" Margin="0,8,0,4"/>
+                        <ComboBox x:Name="cbDepartment" Style="{StaticResource DarkCombo}"/>
+
+                        <TextBlock Text="Position" Foreground="#B6B8D6" Margin="0,8,0,4"/>
+                        <TextBox x:Name="txtPosition" Style="{StaticResource DarkTextBox}"/>
+
+                        <TextBlock Text="Base Salary" Foreground="#B6B8D6" Margin="0,8,0,4"/>
+                        <TextBox x:Name="txtBaseSalary" Style="{StaticResource DarkTextBox}" PreviewTextInput="NumericOnly"/>
+
+                        <TextBlock Text="Hire Date" Foreground="#B6B8D6" Margin="0,8,0,4"/>
+                        <DatePicker x:Name="dpHireDate" Style="{StaticResource DarkDatePicker}"/>
+
+                        <TextBlock Text="Avatar" Foreground="#B6B8D6" Margin="0,10,0,6"/>
+                        <Border Background="#1E204D" BorderBrush="#3A3D7A" BorderThickness="1" CornerRadius="8" Padding="8">
+                            <StackPanel Orientation="Horizontal">
+                                <Image x:Name="imgAvatar" Width="72" Height="72" Stretch="UniformToFill" Margin="0,0,8,0"/>
+                                <StackPanel>
+                                    <Button Content="📁  Upload image" Style="{StaticResource PillButton}" Click="btnUploadAvatar_Click"/>
+                                    <TextBlock Text="PNG/JPG ≤ 2MB" Foreground="#8C8FCF" FontSize="12" Margin="0,6,0,0"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- separator -->
+            <Border Grid.Column="1"/>
+
+            <!-- Grid -->
+            <Border Grid.Column="2" Background="#14163A" CornerRadius="12" Padding="8">
+                <DataGrid x:Name="dgEmployees"
+                          AutoGenerateColumns="False"
+                          Style="{StaticResource NiceGrid}"
+                          SelectionMode="Single"
+                          SelectionChanged="dgEmployees_SelectionChanged">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding EmployeeId}" Width="60"/>
+                        <DataGridTextColumn Header="Full Name" Binding="{Binding FullName}" Width="2*"/>
+                        <DataGridTextColumn Header="Department" Binding="{Binding DepartmentName}" Width="1.5*"/>
+                        <DataGridTextColumn Header="Position" Binding="{Binding Position}" Width="1.5*"/>
+                        <DataGridTextColumn Header="Gender" Binding="{Binding GenderText}" Width="1*"/>
+                        <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Width="1.3*"/>
+                        <DataGridTextColumn Header="Base Salary" Binding="{Binding BaseSalary, StringFormat={}{0:N0}}" Width="1.2*"/>
+                        <DataGridTextColumn Header="Hire Date" Binding="{Binding HireDate, StringFormat={}{0:yyyy-MM-dd}}" Width="1.2*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>

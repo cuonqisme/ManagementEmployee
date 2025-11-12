@@ -1,4 +1,5 @@
 ﻿using ManagementEmployee.Models;
+using ManagementEmployee.View.Admin;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -73,7 +74,7 @@ namespace ManagementEmployee
                         return;
                     }
 
-                    // ===== Password Verify (đa chế độ) =====
+                    // hash pass => 
                     bool ok = VerifyPasswordFlexible(password, user.PasswordHash, user.PasswordSalt);
                     if (!ok)
                     {
@@ -82,22 +83,22 @@ namespace ManagementEmployee
                         return;
                     }
 
-                    // ===== Ghi Activity Log (không bắt buộc) =====
+                    // activity log
                     await LogActivityAsync(user.UserId, "Login", "Users", user.UserId, "User login successfully");
 
-                    // ===== Điều hướng theo RoleId (DB seed: 1=Admin, 2=Employee) =====
+                    //
                     switch (user.RoleId)
                     {
-                        case 1: // Admin
+                        case 1:
                             {
-                                var win = new MainWindow(); // truyền 'user' nếu window cần
+                                var win = new AdminWindow();
                                 Application.Current.MainWindow = win;
                                 win.Show();
                                 break;
                             }
-                        case 2: // Employee
+                        case 2:
                             {
-                                //var win = new EmployeeMainWindow(); // truyền 'user' nếu cần
+                                //var win = new EmployeeMainWindow(); 
                                 //Application.Current.MainWindow = win;
                                 //win.Show();
                                 break;
@@ -130,14 +131,6 @@ namespace ManagementEmployee
             this.Hide();
         }
 
-        // ================== Helpers ==================
-
-        /// <summary>
-        /// Xác thực linh hoạt:
-        /// 1) salted SHA256 (Base64/Hex) với storedSalt
-        /// 2) SHA256 không salt (Base64/Hex)
-        /// 3) Plaintext (storedHash == input)
-        /// </summary>
         private static bool VerifyPasswordFlexible(string inputPassword, string storedHash, string storedSalt)
         {
             if (string.IsNullOrEmpty(storedHash))
@@ -207,7 +200,6 @@ namespace ManagementEmployee
             }
             catch
             {
-                // tránh chặn đăng nhập nếu ghi log lỗi
             }
         }
     }

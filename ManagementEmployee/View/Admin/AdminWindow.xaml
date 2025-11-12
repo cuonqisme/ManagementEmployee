@@ -1,0 +1,213 @@
+﻿<Window x:Class="ManagementEmployee.View.Admin.AdminWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ManagementEmployee.View.Admin"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="ManagementEmployee — Admin"
+         WindowState="Maximized" Background="#0F1024">
+
+    <Window.Resources>
+
+        <Style x:Key="NavButton" TargetType="Button" BasedOn="{StaticResource buttonMain}">
+            <Setter Property="Background" Value="#00000000"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Margin" Value="4,4,4,0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" CornerRadius="8" Background="{TemplateBinding Background}">
+                            <ContentPresenter Margin="8,0" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#29FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#40FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--dashboard -->
+        <Style x:Key="MetricCard" TargetType="Border">
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
+                        <GradientStop Color="#2D1E80" Offset="0"/>
+                        <GradientStop Color="#4A2FD6" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="18" ShadowDepth="0" Opacity="0.35" Color="#000000"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="56"/>
+
+            <RowDefinition Height="*"/>
+
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="201"/>
+
+            <ColumnDefinition/>
+
+        </Grid.ColumnDefinitions>
+
+
+        <Border Grid.Row="0" Grid.ColumnSpan="2" Background="#14163A">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0">
+                    <Image Source="/Images/Logo.png" Width="28" Height="28" Margin="0,0,8,0"/>
+                    <TextBlock Text="Admin Console"
+                               Foreground="White" FontSize="16" FontWeight="SemiBold"/>
+                    <TextBlock Text="  ·  ManagementEmployee"
+                               Foreground="#B6B8D6" FontSize="13" Margin="6,0,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
+                    <Border CornerRadius="12" Background="#292B5D" Padding="10,6" >
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🔔" FontSize="14" VerticalAlignment="Center"/>
+                            <!-- Badge đếm thông báo -->
+                            <Border Background="#E85A8D" CornerRadius="10" Padding="6,2" VerticalAlignment="Center">
+                                <TextBlock x:Name="txtCountMessageNotRead" Foreground="White" FontSize="12" FontWeight="Bold"/>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <Button x:Name="btnLogout"
+                            Content="🚪 Log out"
+                            Click="Button_Logout"
+                            Style="{StaticResource buttonMainGreen}"
+                            Height="36" Padding="16,4"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+
+        <Border Grid.Row="1" Grid.Column="0" Margin="10,16,2,16" CornerRadius="20">
+            <Border.Background>
+                <SolidColorBrush Color="#FF614BD4" Opacity="0.4"/>
+            </Border.Background>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Profile mini -->
+                <StackPanel Orientation="Horizontal" Margin="16,16,16,8">
+                    <Ellipse Width="36" Height="36" Fill="#FF808028"/>
+                    <StackPanel>
+                        <TextBlock x:Name="txtAdminName" Text="Administrator"
+                                   Foreground="White" FontWeight="SemiBold"/>
+                        <TextBlock Text="Admin role" Foreground="#EDEBFF" FontSize="12"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel x:Name="buttonList" Grid.Row="1" Margin="10,6,10,6">
+                    <Button x:Name="btnHome"         Content="🏠  Home"              Click="HomeButton"          Style="{StaticResource NavButton}"/>
+                    <Button x:Name="btnProfile"      Content="👤  Your profile"       Click="ProfileButton"       Style="{StaticResource NavButton}"/>
+                    <Button x:Name="btnAccount"      Content="👥  Account Manager"    Click="AccountManagerButton" Style="{StaticResource NavButton}"/>
+                    <Button x:Name="btnCertificate"  Content="📄  Certificate"        Click="CertificateButton"   Style="{StaticResource NavButton}"/>
+                    <Button x:Name="btnNotify"       Content="🔔  Notification"       Click="NotificationButton"  Style="{StaticResource NavButton}"/>
+                </StackPanel>
+
+                <TextBlock Grid.Row="2" Text="v1.0 • © ManagementEmployee"
+                           Foreground="#EDEBFF" FontSize="11"
+                           HorizontalAlignment="Center" Margin="0,0,0,10"/>
+            </Grid>
+        </Border>
+
+
+        <Grid Grid.Row="1" Grid.Column="1" Margin="0,16,16,16">
+            <!-- Nền -->
+            <Border CornerRadius="20">
+                <Border.Background>
+                    <ImageBrush ImageSource="/Images/background1.png" Stretch="UniformToFill" Opacity="0.15"/>
+                </Border.Background>
+            </Border>
+
+            <!-- Dashboard (Home) -->
+            <Grid x:Name="DashboardGrid" Margin="8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Dashboard Overview"
+                           Foreground="White" FontSize="20" FontWeight="SemiBold" Margin="8,4,0,16"/>
+
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Metrics -->
+                    <Border Grid.Column="0" Style="{StaticResource MetricCard}" Margin="8">
+                        <StackPanel>
+                            <TextBlock Text="👔 Employees" Foreground="#F2F2FF" FontSize="14"/>
+                            <TextBlock x:Name="txtMetricEmployees" Text="—" Foreground="White" FontSize="28" FontWeight="Bold"/>
+                            <TextBlock Text="Active employees" Foreground="#D6D7F2" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="1" Style="{StaticResource MetricCard}" Margin="8">
+                        <StackPanel>
+                            <TextBlock Text="🏢 Departments" Foreground="#F2F2FF" FontSize="14"/>
+                            <TextBlock x:Name="txtMetricDepartments" Text="—" Foreground="White" FontSize="28" FontWeight="Bold"/>
+                            <TextBlock Text="Total departments" Foreground="#D6D7F2" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2" Style="{StaticResource MetricCard}" Margin="8">
+                        <StackPanel>
+                            <TextBlock Text="📝 Leave Pending" Foreground="#F2F2FF" FontSize="14"/>
+                            <TextBlock x:Name="txtMetricLeavePending" Text="—" Foreground="White" FontSize="28" FontWeight="Bold"/>
+                            <TextBlock Text="Awaiting approval" Foreground="#D6D7F2" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+
+
+                </Grid>
+            </Grid>
+
+
+            <Frame x:Name="ContentFrame"
+                   NavigationUIVisibility="Hidden"
+                   Margin="8"
+                   Visibility="Collapsed"/>
+        </Grid>
+    </Grid>
+</Window>
