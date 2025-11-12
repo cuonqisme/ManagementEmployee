@@ -132,9 +132,12 @@
 
                 <StackPanel x:Name="buttonList" Grid.Row="1" Margin="10,6,10,6">
                     <Button x:Name="btnHome"         Content="🏠  Home"              Click="HomeButton"          Style="{StaticResource NavButton}"/>
-                    <Button x:Name="btnProfile"      Content="👤  Your profile"       Click="ProfileButton"       Style="{StaticResource NavButton}"/>
                     <Button x:Name="btnAccount"      Content="👥  Account Manager"    Click="AccountManagerButton" Style="{StaticResource NavButton}"/>
-                    <Button x:Name="btnCertificate"  Content="📄  Certificate"        Click="CertificateButton"   Style="{StaticResource NavButton}"/>
+                    <Button x:Name="btnDept"      Content="🏢  Department Manager" Click="DepartmentButton" Style="{StaticResource NavButton}"/>
+                    <Button x:Name="btnPayroll"   Content="💰  Payroll Manager"    Click="PayrollButton"    Style="{StaticResource NavButton}"/>
+                    <Button x:Name="btnAttendance" Content="🕒  Attendance Manager" Click="AttendanceButton" Style="{StaticResource NavButton}"/>
+                    <Button x:Name="btnActivityLog" Content="📜  Activity Log" Click="ActivityLogButton"  Style="{StaticResource NavButton}"/>
+                    <Button x:Name="btnBackup" Content="🗂  Backup – Restore" Click="BackupButton" Style="{StaticResource NavButton}"/>
                     <Button x:Name="btnNotify"       Content="🔔  Notification"       Click="NotificationButton"  Style="{StaticResource NavButton}"/>
                 </StackPanel>
 

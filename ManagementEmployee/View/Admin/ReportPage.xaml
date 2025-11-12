@@ -1,0 +1,357 @@
+﻿<Page x:Class="ManagementEmployee.View.Admin.ReportPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ManagementEmployee.View.Admin"
+     mc:Ignorable="d"
+      d:DesignWidth="1100" d:DesignHeight="700"
+      Title="ReportPage"
+      Background="#0F1024">
+
+    <Page.Resources>
+        <!-- Card tối -->
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Background" Value="#14163A"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="18" ShadowDepth="0" Opacity="0.35" Color="#000000"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Ô nhập tối -->
+        <Style x:Key="DarkBox" TargetType="Control">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Foreground" Value="#EDEBFF"/>
+            <Setter Property="BorderBrush" Value="#3A3D7A"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,6"/>
+        </Style>
+        <Style x:Key="DarkTextBox" TargetType="TextBox" BasedOn="{StaticResource DarkBox}">
+            <Setter Property="Background" Value="#1E204D"/>
+        </Style>
+        <Style x:Key="DarkCombo" TargetType="ComboBox" BasedOn="{StaticResource DarkBox}">
+            <Setter Property="Background" Value="#1E204D"/>
+        </Style>
+        <Style x:Key="DarkDatePicker" TargetType="DatePicker" BasedOn="{StaticResource DarkBox}">
+            <Setter Property="Background" Value="#1E204D"/>
+        </Style>
+
+        <!-- Nút tròn -->
+        <Style x:Key="PillButton" TargetType="Button">
+            <Setter Property="Background" Value="#5fe7c4"/>
+            <Setter Property="Foreground" Value="#0F1024"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Padding" Value="16,6"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="18" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#4ec7a8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- DataGrid tối -->
+        <Style x:Key="GridDark" TargetType="DataGrid">
+            <Setter Property="Background" Value="#14163A"/>
+            <Setter Property="Foreground" Value="#EDEBFF"/>
+            <Setter Property="RowBackground" Value="#1B1E49"/>
+            <Setter Property="AlternatingRowBackground" Value="#20245A"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="RowHeight" Value="34"/>
+            <Setter Property="ColumnHeaderHeight" Value="38"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="0,12,0,0"/>
+        </Style>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#2A2D5F"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderBrush" Value="#2A2D5F"/>
+            <Setter Property="BorderThickness" Value="0,0,1,0"/>
+            <Setter Property="Height" Value="36"/>
+        </Style>
+
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Page.Resources>
+
+    <Grid Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ===== Header + summary ===== -->
+        <Border Grid.Row="0" CornerRadius="20" Background="#1A1D4D" Padding="20" Margin="0,0,0,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <TextBlock Text="Báo cáo nhân sự và lương" Foreground="White" FontSize="20" FontWeight="SemiBold"/>
+                    <TextBlock Text="Theo dõi nhân sự, Gross/Net theo tháng và quý" Foreground="#B6B8D6" Margin="0,4,0,0"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                        <Border Style="{StaticResource Card}" Background="#2A2D5F" Margin="0,0,12,0" Width="220">
+                            <StackPanel>
+                                <TextBlock Text="Nhân viên hoạt động" Foreground="#D6D7F2" FontSize="12"/>
+                                <TextBlock Text="{Binding ActiveEmployeeCount}" Foreground="White" FontSize="28" FontWeight="Bold" Margin="0,6,0,0"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Card}" Background="#292C66" Margin="0,0,12,0" Width="220">
+                            <StackPanel>
+                                <TextBlock Text="Nhân viên tạm nghỉ" Foreground="#D6D7F2" FontSize="12"/>
+                                <TextBlock Text="{Binding InactiveEmployeeCount}" Foreground="White" FontSize="28" FontWeight="Bold" Margin="0,6,0,0"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Card}" Background="#14163A" Width="260">
+                            <StackPanel>
+                                <TextBlock Text="Tổng Net năm" Foreground="#D6D7F2" FontSize="12"/>
+                                <TextBlock Text="{Binding TotalAnnualNet, StringFormat={}{0:N0}}" Foreground="White" FontSize="28" FontWeight="Bold" Margin="0,6,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top">
+                    <Button Content="Xuất Excel phòng ban" Command="{Binding ExportEmployeeByDepartmentCommand}" Style="{StaticResource PillButton}"/>
+                    <Button Content="Xuất Excel chức vụ" Command="{Binding ExportEmployeeByPositionCommand}" Style="{StaticResource PillButton}" Margin="8,0,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ===== Content tabs ===== -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <TabControl Background="Transparent" BorderThickness="0" Padding="8">
+                <!-- Tab 1: Nhân viên -->
+                <TabItem Header="Thống kê nhân viên" Padding="10,6">
+                    <StackPanel>
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="Tổng quan theo phòng ban" Foreground="White" FontSize="16" FontWeight="SemiBold"/>
+                                <TextBlock Text="Số lượng theo trạng thái hoạt động" Foreground="#B6B8D6" Margin="0,4,0,0"/>
+                                <DataGrid ItemsSource="{Binding DepartmentStatistics}" Style="{StaticResource GridDark}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Phòng ban" Binding="{Binding DepartmentName}" Width="2*"/>
+                                        <DataGridTextColumn Header="Đang hoạt động" Binding="{Binding TotalEmployees}" Width="*"/>
+                                        <DataGridTextColumn Header="Tạm nghỉ" Binding="{Binding InactiveEmployees}" Width="*"/>
+                                        <DataGridTextColumn Header="Tổng số" Binding="{Binding Total}" Width="*"/>
+                                        <DataGridTextColumn Header="% Hoạt động" Binding="{Binding ActiveRatio, StringFormat={}{0:F1}%}" Width="*"/>
+                                        <DataGridTextColumn Header="% Tạm nghỉ" Binding="{Binding InactiveRatio, StringFormat={}{0:F1}%}" Width="*"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </StackPanel>
+                        </Border>
+
+                        <Grid Margin="0,12,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.2*"/>
+                                <ColumnDefinition Width="0.8*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Style="{StaticResource Card}" Margin="0,0,12,0">
+                                <StackPanel>
+                                    <TextBlock Text="Theo chức vụ" Foreground="White" FontSize="16" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Số lượng và lương cơ bản trung bình" Foreground="#B6B8D6" Margin="0,4,0,0"/>
+                                    <DataGrid ItemsSource="{Binding PositionStatistics}" Style="{StaticResource GridDark}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Chức vụ" Binding="{Binding Position}" Width="2*"/>
+                                            <DataGridTextColumn Header="Số lượng" Binding="{Binding Count}" Width="*"/>
+                                            <DataGridTextColumn Header="Lương TB" Binding="{Binding AverageSalary, StringFormat={}{0:N0}}" Width="*"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="1" Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Text="Giới tính" Foreground="White" FontSize="16" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Tỉ lệ theo giới" Foreground="#B6B8D6" Margin="0,4,0,0"/>
+                                    <ItemsControl ItemsSource="{Binding GenderStatistics}" Margin="0,12,0,0">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Margin="0,0,0,10">
+                                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding Gender}" Width="120" Foreground="#EDEBFF" FontWeight="SemiBold"/>
+                                                        <ProgressBar Minimum="0" Maximum="100" Value="{Binding Percentage}" Width="180" Height="8" Margin="12,0,12,0" Background="#2A2D5F"/>
+                                                        <TextBlock Text="{Binding Percentage, StringFormat={}{0:F1}%}" Width="60" Foreground="#5fe7c4" FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{Binding Count}" Width="60" Foreground="#B6B8D6"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                </TabItem>
+
+                <!-- Tab 2: Lương -->
+                <TabItem Header="Thống kê lương" Padding="10,6">
+                    <StackPanel>
+                        <Border Style="{StaticResource Card}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Lương theo tháng" Foreground="White" FontSize="16" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Theo dõi Gross/Net và số nhân sự" Foreground="#B6B8D6" Margin="0,4,0,0"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                    <TextBlock Text="Năm:" Foreground="#EDEBFF" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <ComboBox Width="120" ItemsSource="{Binding AvailableYears}" SelectedItem="{Binding SelectedYear}" Style="{StaticResource DarkCombo}" />
+                                    <Button Content="Tải dữ liệu" Command="{Binding LoadStatisticsCommand}" Style="{StaticResource PillButton}" Margin="8,0,0,0"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.ColumnSpan="2" Margin="0,48,0,0">
+                                    <DataGrid ItemsSource="{Binding MonthlySalaryStatistics}" Style="{StaticResource GridDark}"
+                                              Visibility="{Binding HasMonthlyData, Converter={StaticResource BoolToVis}}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Tháng" Binding="{Binding Month, StringFormat='Tháng {0}'}" Width="*"/>
+                                            <DataGridTextColumn Header="Số nhân viên" Binding="{Binding TotalEmployees}" Width="*"/>
+                                            <DataGridTextColumn Header="Tổng Gross" Binding="{Binding TotalGross, StringFormat={}{0:N0}}" Width="1.2*"/>
+                                            <DataGridTextColumn Header="Tổng Net" Binding="{Binding TotalNet, StringFormat={}{0:N0}}" Width="1.2*"/>
+                                            <DataGridTextColumn Header="Gross TB" Binding="{Binding AverageGross, StringFormat={}{0:N0}}" Width="*"/>
+                                            <DataGridTextColumn Header="Net TB" Binding="{Binding AverageNet, StringFormat={}{0:N0}}" Width="*"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+
+                                    <TextBlock Text="Chưa có dữ liệu lương cho năm được chọn." Foreground="#B6B8D6" HorizontalAlignment="Center" Margin="0,16,0,0">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding HasMonthlyData}" Value="False">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                                        <Button Content="Xuất Excel tháng" Command="{Binding ExportSalaryByMonthCommand}" Style="{StaticResource PillButton}"/>
+                                        <Button Content="Xuất PDF tháng" Command="{Binding ExportSalaryByMonthPdfCommand}" Style="{StaticResource PillButton}" Margin="8,0,0,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Grid Margin="0,12,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.2*"/>
+                                <ColumnDefinition Width="0.8*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Style="{StaticResource Card}" Margin="0,0,12,0">
+                                <StackPanel>
+                                    <TextBlock Text="Lương theo quý" Foreground="White" FontSize="16" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Tổng hợp theo quý trong năm" Foreground="#B6B8D6" Margin="0,4,0,0"/>
+                                    <DataGrid ItemsSource="{Binding QuarterlySalaryStatistics}" Style="{StaticResource GridDark}"
+                                              Visibility="{Binding HasQuarterlyData, Converter={StaticResource BoolToVis}}">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Quý" Binding="{Binding Quarter, StringFormat='Q{0}'}" Width="*"/>
+                                            <DataGridTextColumn Header="Tổng Gross" Binding="{Binding TotalGross, StringFormat={}{0:N0}}" Width="1.2*"/>
+                                            <DataGridTextColumn Header="Tổng Net" Binding="{Binding TotalNet, StringFormat={}{0:N0}}" Width="1.2*"/>
+                                            <DataGridTextColumn Header="Gross TB" Binding="{Binding AverageGross, StringFormat={}{0:N0}}" Width="*"/>
+                                            <DataGridTextColumn Header="Net TB" Binding="{Binding AverageNet, StringFormat={}{0:N0}}" Width="*"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+
+                                    <TextBlock Text="Chưa có dữ liệu quý cho năm này." Foreground="#B6B8D6" HorizontalAlignment="Center" Margin="0,16,0,0">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding HasQuarterlyData}" Value="False">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                                        <Button Content="Xuất Excel quý" Command="{Binding ExportSalaryByQuarterCommand}" Style="{StaticResource PillButton}"/>
+                                        <Button Content="Xuất PDF quý" Command="{Binding ExportSalaryByQuarterPdfCommand}" Style="{StaticResource PillButton}" Margin="8,0,0,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="1" Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <TextBlock Text="Chi tiết quý đang chọn" Foreground="White" FontSize="16" FontWeight="SemiBold"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                                        <TextBlock Text="Quý:" Foreground="#EDEBFF" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                        <ComboBox Width="120" ItemsSource="{Binding QuarterOptions}" SelectedItem="{Binding SelectedQuarter}" Style="{StaticResource DarkCombo}"/>
+                                    </StackPanel>
+
+                                    <Border Background="#1E204D" CornerRadius="12" Padding="16" Margin="0,12,0,0">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding SelectedQuarterStatistic.Quarter, StringFormat='Q{0}', TargetNullValue='Không có dữ liệu'}"
+                                                       Foreground="White" FontSize="18" FontWeight="SemiBold"/>
+                                            <UniformGrid Columns="2" Margin="0,12,0,0">
+                                                <StackPanel Margin="0,0,12,0">
+                                                    <TextBlock Text="Tổng Gross" Foreground="#B6B8D6"/>
+                                                    <TextBlock Text="{Binding SelectedQuarterStatistic.TotalGross, StringFormat={}{0:N0}, TargetNullValue='-'}" Foreground="White" FontWeight="SemiBold"/>
+                                                </StackPanel>
+                                                <StackPanel>
+                                                    <TextBlock Text="Tổng Net" Foreground="#B6B8D6"/>
+                                                    <TextBlock Text="{Binding SelectedQuarterStatistic.TotalNet, StringFormat={}{0:N0}, TargetNullValue='-'}" Foreground="White" FontWeight="SemiBold"/>
+                                                </StackPanel>
+                                                <StackPanel Margin="0,12,12,0">
+                                                    <TextBlock Text="Gross TB" Foreground="#B6B8D6"/>
+                                                    <TextBlock Text="{Binding SelectedQuarterStatistic.AverageGross, StringFormat={}{0:N0}, TargetNullValue='-'}" Foreground="White" FontWeight="SemiBold"/>
+                                                </StackPanel>
+                                                <StackPanel Margin="0,12,0,0">
+                                                    <TextBlock Text="Net TB" Foreground="#B6B8D6"/>
+                                                    <TextBlock Text="{Binding SelectedQuarterStatistic.AverageNet, StringFormat={}{0:N0}, TargetNullValue='-'}" Foreground="White" FontWeight="SemiBold"/>
+                                                </StackPanel>
+                                            </UniformGrid>
+                                            <TextBlock Text="{Binding SelectedQuarterStatistic.MonthCount, StringFormat='Số tháng có dữ liệu: {0}', TargetNullValue='Số tháng có dữ liệu: 0'}"
+                                                       Margin="0,16,0,0" Foreground="#5fe7c4" FontWeight="SemiBold"/>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                </TabItem>
+
+                <!-- Tab 3: Hướng dẫn -->
+                <TabItem Header="Hướng dẫn và ghi chú" Padding="10,6">
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="Gợi ý sử dụng báo cáo" Foreground="White" FontSize="16" FontWeight="SemiBold"/>
+                            <TextBlock Text="• Xuất Excel hoặc PDF để chia sẻ nhanh." Foreground="#B6B8D6" Margin="0,6,0,0"/>
+                            <TextBlock Text="• Lọc theo năm để so sánh xu hướng lương." Foreground="#B6B8D6" Margin="0,4,0,0"/>
+                            <TextBlock Text="• Trang nhân viên giúp nhìn ra phòng ban cần tăng cường." Foreground="#B6B8D6" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </TabItem>
+            </TabControl>
+        </ScrollViewer>
+    </Grid>
+</Page>

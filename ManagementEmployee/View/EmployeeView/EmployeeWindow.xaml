@@ -1,0 +1,318 @@
+﻿<Window x:Class="ManagementEmployee.View.EmployeeView.EmployeeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="ManagementEmployee — Employee"
+        Width="1100" Height="740" Background="#0F1024"
+        Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+
+        <!-- Card chung -->
+        <Style x:Key="CardBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="16" ShadowDepth="0" Opacity="0.12"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Nút chính -->
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="12 8"/>
+            <Setter Property="Background" Value="#2563EB"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="MinWidth" Value="120"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#1D4ED8"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#1E40AF"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#9CA3AF"/>
+                    <Setter Property="Opacity" Value="0.8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Nút viền -->
+        <Style x:Key="OutlinedButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="10 6"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="#2563EB"/>
+            <Setter Property="BorderThickness" Value="1.2"/>
+            <Setter Property="Foreground" Value="#2563EB"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="MinWidth" Value="120"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#EEF2FF"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="BorderBrush" Value="#9CA3AF"/>
+                    <Setter Property="Foreground" Value="#9CA3AF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- DataGrid nhẹ nhàng -->
+        <Style TargetType="DataGrid">
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="RowHeight" Value="40"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="0,8,0,0"/>
+            <Setter Property="RowBackground" Value="White"/>
+            <Setter Property="AlternatingRowBackground" Value="#F8FAFC"/>
+        </Style>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#EFF3FF"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#1F2937"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="36"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="56"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Thanh trên -->
+        <Border Grid.Row="0" Background="#14163A">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0">
+                    <Image Source="/Images/Logo.png" Width="28" Height="28" Margin="0,0,8,0"/>
+                    <TextBlock Text="Employee Console" Foreground="White" FontSize="16" FontWeight="SemiBold"/>
+                    <TextBlock Text="  ·  ManagementEmployee" Foreground="#B6B8D6" FontSize="13" Margin="6,0,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
+                    <Border CornerRadius="12" Background="#292B5D" Padding="10,6">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Ellipse Width="20" Height="20" Fill="#FF80E28E" Margin="0,0,8,0"/>
+                            <TextBlock Text="{Binding EmployeeName, TargetNullValue='Employee'}" Foreground="White" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Nội dung -->
+        <Grid Grid.Row="1" Margin="16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="360"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Thông tin cá nhân -->
+            <Border Grid.Column="0" Grid.RowSpan="2" Style="{StaticResource CardBorderStyle}" Padding="20">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="56" Height="56">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="/Images/logo.png" Stretch="UniformToFill"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding EmployeeName}" FontSize="20" FontWeight="Bold" Foreground="#0F172A"/>
+                            <TextBlock Text="{Binding Position, StringFormat='Chức vụ: {0}', TargetNullValue='Chức vụ: —'}" Foreground="#475569"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Separator Margin="0,12,0,12"/>
+
+                    <UniformGrid Columns="1" Rows="8">
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <TextBlock Text="Email:" Width="120" Foreground="#6B7280"/>
+                            <TextBlock Text="{Binding Email}" FontWeight="SemiBold"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <TextBlock Text="Phòng ban:" Width="120" Foreground="#6B7280"/>
+                            <TextBlock Text="{Binding DepartmentName, TargetNullValue='—'}" FontWeight="SemiBold"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <TextBlock Text="Số điện thoại:" Width="120" Foreground="#6B7280"/>
+                            <TextBlock Text="{Binding Phone, TargetNullValue='—'}" FontWeight="SemiBold"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <TextBlock Text="Địa chỉ:" Width="120" Foreground="#6B7280"/>
+                            <TextBlock Text="{Binding Address, TargetNullValue='—'}" TextWrapping="Wrap" Width="180" FontWeight="SemiBold"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <TextBlock Text="Giới tính:" Width="120" Foreground="#6B7280"/>
+                            <TextBlock Text="{Binding Gender, TargetNullValue='—'}" FontWeight="SemiBold"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <TextBlock Text="Ngày sinh:" Width="120" Foreground="#6B7280"/>
+                            <TextBlock Text="{Binding DobDisplay, TargetNullValue='—'}" FontWeight="SemiBold"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <TextBlock Text="Ngày vào làm:" Width="120" Foreground="#6B7280"/>
+                            <TextBlock Text="{Binding HireDateDisplay, TargetNullValue='—'}" FontWeight="SemiBold"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,2">
+                            <TextBlock Text="Trạng thái:" Width="120" Foreground="#6B7280"/>
+                            <TextBlock Text="{Binding ActiveDisplay}" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </UniformGrid>
+
+                    <Separator Margin="0,12,0,12"/>
+
+                    <Button Content="Tải lại dữ liệu"
+                            Command="{Binding RefreshCommand}"
+                            Style="{StaticResource OutlinedButtonStyle}" />
+                </StackPanel>
+            </Border>
+
+            <!-- Chấm công hôm nay -->
+            <Border Grid.Column="2" Grid.Row="0" Style="{StaticResource CardBorderStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Chấm công hôm nay"
+                                   FontSize="20" FontWeight="SemiBold" Foreground="#1F2937"/>
+                        <TextBlock Text="{Binding TodayStatusText}"
+                                   Margin="0,4,0,8" Foreground="#6B7280"/>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <Button Content="Check in"
+                                    Command="{Binding CheckInCommand}"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    IsEnabled="{Binding CanCheckIn}"/>
+                            <Button Content="Check out"
+                                    Command="{Binding CheckOutCommand}"
+                                    Style="{StaticResource OutlinedButtonStyle}"
+                                    Margin="8,0,0,0"
+                                    IsEnabled="{Binding CanCheckOut}"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top">
+                        <TextBlock Text="{Binding TodayDateDisplay}" Foreground="#2563EB" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding NowDisplay}" Foreground="#6B7280" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Lịch sử chấm công -->
+            <Border Grid.Column="2" Grid.Row="1" Style="{StaticResource CardBorderStyle}">
+                <StackPanel>
+                    <TextBlock Text="Lịch sử chấm công gần đây"
+                               FontSize="20" FontWeight="SemiBold" Foreground="#1F2937"/>
+                    <DataGrid ItemsSource="{Binding RecentAttendance}"
+                              Margin="0,8,0,0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Thời gian"
+                                                Binding="{Binding CreatedAt, StringFormat=\{0:dd/MM/yyyy HH:mm:ss\}}"
+                                                Width="200"/>
+                            <DataGridTextColumn Header="Hành động"
+                                                Binding="{Binding Action}"
+                                                Width="120"/>
+                            <DataGridTextColumn Header="Chi tiết"
+                                                Binding="{Binding Details}"
+                                                Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <TextBlock Text="Chưa có dữ liệu chấm công."
+                               Foreground="#6B7280"
+                               HorizontalAlignment="Center" Margin="0,8,0,0">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding RecentAttendance.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Overlay loading -->
+        <Border Grid.RowSpan="3" Background="#55000000"
+                Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}"
+                IsHitTestVisible="{Binding IsLoading}">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ProgressBar Width="220" Height="6" IsIndeterminate="True"/>
+                <TextBlock Text="Đang xử lý..." Margin="0,12,0,0" Foreground="White" FontWeight="SemiBold"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Status bar -->
+        <StatusBar Grid.Row="2" Background="#FFFFFF" Padding="16,6">
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusMessage, TargetNullValue='Sẵn sàng'}" Foreground="#1F2937"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock Text="{Binding UnreadTips, TargetNullValue=''}" Foreground="#2563EB" FontWeight="SemiBold"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>

@@ -4,11 +4,12 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       mc:Ignorable="d"
-      d:DesignHeight="700" d:DesignWidth="1100"
+      d:DesignHeight="950" d:DesignWidth="1100"
       Title="AccountManager">
 
     <Page.Resources>
 
+        <!-- Styles -->
         <Style x:Key="DarkBox" TargetType="Control">
             <Setter Property="Height" Value="36"/>
             <Setter Property="Foreground" Value="#EDEBFF"/>
@@ -82,15 +83,22 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-
+        <!-- Header -->
         <DockPanel Grid.Row="0" Margin="8,8,8,0">
             <TextBlock Text="👥  Employee Manager" Foreground="White" FontSize="20" FontWeight="SemiBold"
                        VerticalAlignment="Center" />
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button x:Name="btnNew" Content="➕  New" Style="{StaticResource PillButton}" Margin="8,0,0,0" Click="btnNew_Click"/>
-                <Button x:Name="btnSave" Content="💾  Save" Style="{StaticResource PillButton}" Margin="8,0,0,0" Background="#6C70D9" Foreground="White" Click="btnSave_Click"/>
-                <Button x:Name="btnCancel" Content="↺  Cancel" Style="{StaticResource PillButton}" Margin="8,0,0,0" Background="#292C66" Foreground="#EDEBFF" Click="btnCancel_Click"/>
-                <Button x:Name="btnDelete" Content="🗑  Delete" Style="{StaticResource PillButton}" Margin="8,0,0,0" Background="#E85A8D" Foreground="White" Click="btnDelete_Click"/>
+                <Button Content="➕  New"    Style="{StaticResource PillButton}"  Margin="8,0,0,0"
+                        Command="{Binding NewCommand}"/>
+                <Button Content="💾  Save"   Style="{StaticResource PillButton}"  Margin="8,0,0,0"
+                        Background="#6C70D9" Foreground="White"
+                        Command="{Binding SaveCommand}"/>
+                <Button Content="↺  Cancel" Style="{StaticResource PillButton}"  Margin="8,0,0,0"
+                        Background="#292C66" Foreground="#EDEBFF"
+                        Command="{Binding CancelCommand}"/>
+                <Button Content="🗑  Delete" Style="{StaticResource PillButton}"  Margin="8,0,0,0"
+                        Background="#E85A8D" Foreground="White"
+                        Command="{Binding DeleteCommand}"/>
             </StackPanel>
         </DockPanel>
 
@@ -107,56 +115,64 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Họ tên / Email -->
+                <!-- Name/Position contains -->
                 <StackPanel Grid.Column="0">
                     <TextBlock Text="Name / Position (contains)" Foreground="#B6B8D6" Margin="4,0,0,4"/>
-                    <TextBox x:Name="txtFilterName" Style="{StaticResource DarkTextBox}" TextChanged="AnyFilterChanged"/>
+                    <TextBox Style="{StaticResource DarkTextBox}"
+                             Text="{Binding FilterName, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
 
-                <!-- Phòng ban -->
+                <!-- Department -->
                 <StackPanel Grid.Column="1" Margin="10,0,0,0">
                     <TextBlock Text="Department" Foreground="#B6B8D6" Margin="4,0,0,4"/>
-                    <ComboBox x:Name="cbFilterDept" Style="{StaticResource DarkCombo}" SelectionChanged="AnyFilterChanged"/>
+                    <ComboBox Style="{StaticResource DarkCombo}"
+                              ItemsSource="{Binding Departments}"
+                              DisplayMemberPath="DepartmentName"
+                              SelectedValuePath="DepartmentId"
+                              SelectedValue="{Binding FilterDeptId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
 
-                <!-- Giới tính -->
+                <!-- Gender -->
                 <StackPanel Grid.Column="2" Margin="10,0,0,0">
                     <TextBlock Text="Gender" Foreground="#B6B8D6" Margin="4,0,0,4"/>
-                    <ComboBox x:Name="cbFilterGender" Style="{StaticResource DarkCombo}" SelectionChanged="AnyFilterChanged">
-                        <ComboBoxItem Content="All" Tag="" IsSelected="True"/>
-                        <ComboBoxItem Content="Male" Tag="M"/>
-                        <ComboBoxItem Content="Female" Tag="F"/>
-                        <ComboBoxItem Content="Other" Tag="O"/>
-                    </ComboBox>
+                    <ComboBox Style="{StaticResource DarkCombo}"
+                              ItemsSource="{Binding FilterGenderOptions}"
+                              DisplayMemberPath="Text"
+                              SelectedValuePath="Value"
+                              SelectedValue="{Binding FilterGender, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
 
-                <!-- Lương min -->
+                <!-- Salary Min -->
                 <StackPanel Grid.Column="3" Margin="10,0,0,0">
                     <TextBlock Text="Salary Min" Foreground="#B6B8D6" Margin="4,0,0,4"/>
-                    <TextBox x:Name="txtSalaryMin" Style="{StaticResource DarkTextBox}" PreviewTextInput="NumericOnly" TextChanged="AnyFilterChanged"/>
+                    <TextBox Style="{StaticResource DarkTextBox}"
+                             Text="{Binding FilterSalaryMinText, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
 
-                <!-- Lương max -->
+                <!-- Salary Max -->
                 <StackPanel Grid.Column="4" Margin="10,0,0,0">
                     <TextBlock Text="Salary Max" Foreground="#B6B8D6" Margin="4,0,0,4"/>
-                    <TextBox x:Name="txtSalaryMax" Style="{StaticResource DarkTextBox}" PreviewTextInput="NumericOnly" TextChanged="AnyFilterChanged"/>
+                    <TextBox Style="{StaticResource DarkTextBox}"
+                             Text="{Binding FilterSalaryMaxText, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
 
-                <!-- Ngày vào làm từ -->
+                <!-- Hire From -->
                 <StackPanel Grid.Column="5" Margin="10,0,0,0">
                     <TextBlock Text="Hire Date From" Foreground="#B6B8D6" Margin="4,0,0,4"/>
-                    <DatePicker x:Name="dpHireFrom" Style="{StaticResource DarkDatePicker}" SelectedDateChanged="AnyFilterChanged"/>
+                    <DatePicker Style="{StaticResource DarkDatePicker}"
+                                SelectedDate="{Binding FilterHireFrom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
 
-                <!-- Ngày vào làm đến -->
+                <!-- Hire To -->
                 <StackPanel Grid.Column="6" Margin="10,0,0,0">
                     <TextBlock Text="Hire Date To" Foreground="#B6B8D6" Margin="4,0,0,4"/>
-                    <DatePicker x:Name="dpHireTo" Style="{StaticResource DarkDatePicker}" SelectedDateChanged="AnyFilterChanged"/>
+                    <DatePicker Style="{StaticResource DarkDatePicker}"
+                                SelectedDate="{Binding FilterHireTo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
             </Grid>
         </Border>
 
-
+        <!-- Form + Grid -->
         <Grid Grid.Row="2" Margin="8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="360"/>
@@ -171,42 +187,55 @@
                         <TextBlock Text="Employee detail" Foreground="White" FontWeight="SemiBold" FontSize="16"/>
 
                         <TextBlock Text="Full Name" Foreground="#B6B8D6" Margin="0,12,0,4"/>
-                        <TextBox x:Name="txtFullName" Style="{StaticResource DarkTextBox}"/>
+                        <TextBox Style="{StaticResource DarkTextBox}"
+                                 Text="{Binding EditFullName, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <TextBlock Text="Date of Birth" Foreground="#B6B8D6" Margin="0,8,0,4"/>
-                        <DatePicker x:Name="dpDob" Style="{StaticResource DarkDatePicker}"/>
+                        <DatePicker Style="{StaticResource DarkDatePicker}"
+                                    SelectedDate="{Binding EditDateOfBirth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <TextBlock Text="Gender" Foreground="#B6B8D6" Margin="0,8,0,4"/>
-                        <ComboBox x:Name="cbGender" Style="{StaticResource DarkCombo}">
-                            <ComboBoxItem Content="Male" Tag="M"/>
-                            <ComboBoxItem Content="Female" Tag="F"/>
-                            <ComboBoxItem Content="Other" Tag="O"/>
-                        </ComboBox>
+                        <ComboBox Style="{StaticResource DarkCombo}"
+                                  ItemsSource="{Binding GenderOptions}"
+                                  DisplayMemberPath="Text"
+                                  SelectedValuePath="Value"
+                                  SelectedValue="{Binding EditGender, Mode=TwoWay}"/>
 
                         <TextBlock Text="Address" Foreground="#B6B8D6" Margin="0,8,0,4"/>
-                        <TextBox x:Name="txtAddress" Style="{StaticResource DarkTextBox}"/>
+                        <TextBox Style="{StaticResource DarkTextBox}"
+                                 Text="{Binding EditAddress, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <TextBlock Text="Phone" Foreground="#B6B8D6" Margin="0,8,0,4"/>
-                        <TextBox x:Name="txtPhone" Style="{StaticResource DarkTextBox}"/>
+                        <TextBox Style="{StaticResource DarkTextBox}"
+                                 Text="{Binding EditPhone, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <TextBlock Text="Department" Foreground="#B6B8D6" Margin="0,8,0,4"/>
-                        <ComboBox x:Name="cbDepartment" Style="{StaticResource DarkCombo}"/>
+                        <ComboBox Style="{StaticResource DarkCombo}"
+                                  ItemsSource="{Binding Departments}"
+                                  DisplayMemberPath="DepartmentName"
+                                  SelectedValuePath="DepartmentId"
+                                  SelectedValue="{Binding EditDepartmentId, Mode=TwoWay}"/>
 
                         <TextBlock Text="Position" Foreground="#B6B8D6" Margin="0,8,0,4"/>
-                        <TextBox x:Name="txtPosition" Style="{StaticResource DarkTextBox}"/>
+                        <TextBox Style="{StaticResource DarkTextBox}"
+                                 Text="{Binding EditPosition, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <TextBlock Text="Base Salary" Foreground="#B6B8D6" Margin="0,8,0,4"/>
-                        <TextBox x:Name="txtBaseSalary" Style="{StaticResource DarkTextBox}" PreviewTextInput="NumericOnly"/>
+                        <TextBox Style="{StaticResource DarkTextBox}"
+                                 Text="{Binding EditBaseSalaryText, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <TextBlock Text="Hire Date" Foreground="#B6B8D6" Margin="0,8,0,4"/>
-                        <DatePicker x:Name="dpHireDate" Style="{StaticResource DarkDatePicker}"/>
+                        <DatePicker Style="{StaticResource DarkDatePicker}"
+                                    SelectedDate="{Binding EditHireDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <TextBlock Text="Avatar" Foreground="#B6B8D6" Margin="0,10,0,6"/>
                         <Border Background="#1E204D" BorderBrush="#3A3D7A" BorderThickness="1" CornerRadius="8" Padding="8">
                             <StackPanel Orientation="Horizontal">
-                                <Image x:Name="imgAvatar" Width="72" Height="72" Stretch="UniformToFill" Margin="0,0,8,0"/>
+                                <Image Width="72" Height="72" Stretch="UniformToFill" Margin="0,0,8,0"
+                                       Source="{Binding AvatarPreviewImage}"/>
                                 <StackPanel>
-                                    <Button Content="📁  Upload image" Style="{StaticResource PillButton}" Click="btnUploadAvatar_Click"/>
+                                    <Button Content="📁  Upload image" Style="{StaticResource PillButton}"
+                                            Command="{Binding UploadAvatarCommand}"/>
                                     <TextBlock Text="PNG/JPG ≤ 2MB" Foreground="#8C8FCF" FontSize="12" Margin="0,6,0,0"/>
                                 </StackPanel>
                             </StackPanel>
@@ -220,11 +249,10 @@
 
             <!-- Grid -->
             <Border Grid.Column="2" Background="#14163A" CornerRadius="12" Padding="8">
-                <DataGrid x:Name="dgEmployees"
-                          AutoGenerateColumns="False"
+                <DataGrid AutoGenerateColumns="False"
                           Style="{StaticResource NiceGrid}"
-                          SelectionMode="Single"
-                          SelectionChanged="dgEmployees_SelectionChanged">
+                          ItemsSource="{Binding GridItems}"
+                          SelectedItem="{Binding SelectedRow, Mode=TwoWay}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding EmployeeId}" Width="60"/>
                         <DataGridTextColumn Header="Full Name" Binding="{Binding FullName}" Width="2*"/>

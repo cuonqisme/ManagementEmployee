@@ -1,5 +1,7 @@
 ﻿using ManagementEmployee.Models;
+using ManagementEmployee.Services;
 using ManagementEmployee.View.Admin;
+using ManagementEmployee.View.EmployeeView;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -66,7 +68,7 @@ namespace ManagementEmployee
                         return;
                     }
 
-                    if (user.IsActive == false)
+                    if (!user.IsActive)
                     {
                         MessageBox.Show("Tài khoản đã bị vô hiệu hóa. Vui lòng liên hệ quản trị.",
                                         "Truy cập bị từ chối",
@@ -74,7 +76,6 @@ namespace ManagementEmployee
                         return;
                     }
 
-                    // hash pass => 
                     bool ok = VerifyPasswordFlexible(password, user.PasswordHash, user.PasswordSalt);
                     if (!ok)
                     {
@@ -83,32 +84,30 @@ namespace ManagementEmployee
                         return;
                     }
 
-                    // activity log
                     await LogActivityAsync(user.UserId, "Login", "Users", user.UserId, "User login successfully");
 
-                    //
+                    Window next;
                     switch (user.RoleId)
                     {
                         case 1:
-                            {
-                                var win = new AdminWindow();
-                                Application.Current.MainWindow = win;
-                                win.Show();
-                                break;
-                            }
+                            next = new AdminWindow();
+                            break;
+
                         case 2:
-                            {
-                                //var win = new EmployeeMainWindow(); 
-                                //Application.Current.MainWindow = win;
-                                //win.Show();
-                                break;
-                            }
+                            // Khai báo rõ ràng biến currentUserId
+                            int currentUserId = user.UserId;
+                            next = new EmployeeWindow(currentUserId);
+                            break;
+
                         default:
                             MessageBox.Show("Vai trò tài khoản không hợp lệ. Liên hệ quản trị để được cấp quyền.",
                                             "Lỗi phân quyền", MessageBoxButton.OK, MessageBoxImage.Error);
                             return;
                     }
-
+                    AppSession.SignIn(user.UserId, user.Email, user.Employee?.FullName);
+          
+                    next.Show();
+                    Application.Current.MainWindow = next;
                     this.Close();
                 }
             }

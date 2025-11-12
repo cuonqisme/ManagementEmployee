@@ -1,0 +1,184 @@
+﻿<Page x:Class="ManagementEmployee.View.Admin.DepartmentManagerPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      d:DesignHeight="700" d:DesignWidth="1100"
+      Title="DepartmentManagerPage">
+
+    <Page.Resources>
+        <!-- Thẻ nền tối gọn -->
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Background" Value="#14163A"/>
+        </Style>
+
+        <!-- Ô nhập tối -->
+        <Style x:Key="DarkBox" TargetType="Control">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Foreground" Value="#EDEBFF"/>
+            <Setter Property="BorderBrush" Value="#3A3D7A"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,6"/>
+        </Style>
+        <Style x:Key="DarkTextBox" TargetType="TextBox" BasedOn="{StaticResource DarkBox}">
+            <Setter Property="Background" Value="#1E204D"/>
+        </Style>
+        <Style x:Key="DarkCombo" TargetType="ComboBox" BasedOn="{StaticResource DarkBox}">
+            <Setter Property="Background" Value="#1E204D"/>
+        </Style>
+
+        <!-- Nút tròn thuôn -->
+        <Style x:Key="PillButton" TargetType="Button">
+            <Setter Property="Background" Value="#5fe7c4"/>
+            <Setter Property="Foreground" Value="#0F1024"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Padding" Value="16,6"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="18" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- DataGrid tối -->
+        <Style x:Key="GridDark" TargetType="DataGrid">
+            <Setter Property="Background" Value="#14163A"/>
+            <Setter Property="Foreground" Value="#EDEBFF"/>
+            <Setter Property="RowBackground" Value="#1B1E49"/>
+            <Setter Property="AlternatingRowBackground" Value="#20245A"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="RowHeight" Value="34"/>
+            <Setter Property="ColumnHeaderHeight" Value="38"/>
+        </Style>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#2A2D5F"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderBrush" Value="#2A2D5F"/>
+            <Setter Property="BorderThickness" Value="0,0,1,0"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid Background="#0F1024" Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <DockPanel Grid.Row="0" LastChildFill="True" Margin="0,0,0,8">
+            <TextBlock Text="🏢 Department Manager" Foreground="White" FontSize="18" FontWeight="SemiBold"
+                       VerticalAlignment="Center"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBox Width="280" Margin="8,0,0,0" Style="{StaticResource DarkTextBox}"
+                         Text="{Binding DepartmentName, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Content="➕ Add"    Style="{StaticResource PillButton}" Margin="8,0,0,0"
+                        Command="{Binding AddCommand}"/>
+                <Button Content="💾 Save"   Style="{StaticResource PillButton}" Margin="8,0,0,0"
+                        Background="#6C70D9" Foreground="White" Command="{Binding SaveCommand}"/>
+                <Button Content="🗑 Delete" Style="{StaticResource PillButton}" Margin="8,0,0,0"
+                        Background="#E85A8D" Foreground="White" Command="{Binding DeleteCommand}"/>
+                <Button Content="🔄 Refresh" Style="{StaticResource PillButton}" Margin="8,0,0,0"
+                        Command="{Binding RefreshCommand}"/>
+            </StackPanel>
+        </DockPanel>
+
+        <!-- Body -->
+        <Grid Grid.Row="1" Margin="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Departments -->
+            <Border Style="{StaticResource Card}" Grid.Column="0" Margin="0,0,8,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Departments" Foreground="White" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <DataGrid Grid.Row="1" Style="{StaticResource GridDark}"
+                              AutoGenerateColumns="False" SelectionMode="Single"
+                              ItemsSource="{Binding Departments}"
+                              SelectedItem="{Binding SelectedDepartment, Mode=TwoWay}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID"    Binding="{Binding DepartmentId}" Width="60"/>
+                            <DataGridTextColumn Header="Name"  Binding="{Binding DepartmentName}" Width="*"/>
+                            <DataGridTextColumn Header="Created"
+                                                Binding="{Binding CreatedAt, StringFormat={}{0:yyyy-MM-dd HH:mm}}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <TextBlock Grid.Row="2" Foreground="#B6B8D6" Margin="0,8,0,0"
+                               Text="{Binding DeptSummary}"/>
+                </Grid>
+            </Border>
+
+            <!-- Available employees -->
+            <Border Style="{StaticResource Card}" Grid.Column="1" Margin="0,0,8,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Employees (Assign to selected dept)" Foreground="White" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <ListBox x:Name="lbAvailable" Grid.Row="1" SelectionMode="Extended"
+                             Background="#1E204D" Foreground="#EDEBFF"
+                             ItemsSource="{Binding AvailableEmployees}"
+                             DisplayMemberPath="Name"/>
+                    <Button Content="⮕ Assign »" Grid.Row="2"
+                            Style="{StaticResource PillButton}" HorizontalAlignment="Right" Margin="0,8,0,0"
+                            Click="BtnAssign_Click"/>
+                </Grid>
+            </Border>
+
+            <!-- Employees in dept -->
+            <Border Style="{StaticResource Card}" Grid.Column="2">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Employees in selected dept" Foreground="White" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <DataGrid x:Name="dgDeptEmployees" Grid.Row="1" Style="{StaticResource GridDark}"
+                              AutoGenerateColumns="False"
+                              ItemsSource="{Binding DepartmentEmployees}" SelectionMode="Extended">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID"        Binding="{Binding EmployeeId}" Width="60"/>
+                            <DataGridTextColumn Header="Full Name" Binding="{Binding FullName}"   Width="2*"/>
+                            <DataGridTextColumn Header="Position"  Binding="{Binding Position}"   Width="*"/>
+                            <DataGridTextColumn Header="Phone"     Binding="{Binding Phone}"      Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <TextBlock Grid.Row="2" Foreground="#B6B8D6" Margin="0,8,0,0"
+                               Text="{Binding EmpCountText}"/>
+                    <Button Content="« Remove ⮔" Grid.Row="3"
+                            Style="{StaticResource PillButton}" HorizontalAlignment="Left" Margin="0,8,0,0"
+                            Click="BtnRemove_Click"/>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>

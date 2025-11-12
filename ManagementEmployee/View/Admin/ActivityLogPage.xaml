@@ -1,0 +1,203 @@
+﻿<Page x:Class="ManagementEmployee.View.Admin.ActivityLogPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ManagementEmployee.View.Admin"
+       mc:Ignorable="d"
+        d:DesignWidth="1100" d:DesignHeight="700"
+        Title="ActivityLogPage"
+        Background="#0F1024" >
+
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Background" Value="#14163A"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="18" ShadowDepth="0" Opacity="0.35" Color="#000000"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DarkBox" TargetType="Control">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Foreground" Value="#EDEBFF"/>
+            <Setter Property="BorderBrush" Value="#3A3D7A"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,6"/>
+        </Style>
+        <Style x:Key="DarkTextBox" TargetType="TextBox" BasedOn="{StaticResource DarkBox}">
+            <Setter Property="Background" Value="#1E204D"/>
+        </Style>
+        <Style x:Key="DarkCombo" TargetType="ComboBox" BasedOn="{StaticResource DarkBox}">
+            <Setter Property="Background" Value="#1E204D"/>
+        </Style>
+        <Style x:Key="DarkDatePicker" TargetType="DatePicker" BasedOn="{StaticResource DarkBox}">
+            <Setter Property="Background" Value="#1E204D"/>
+        </Style>
+
+        <Style x:Key="PillButton" TargetType="Button">
+            <Setter Property="Background" Value="#5fe7c4"/>
+            <Setter Property="Foreground" Value="#0F1024"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Padding" Value="16,6"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="18" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#4ec7a8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="GridDark" TargetType="DataGrid">
+            <Setter Property="Background" Value="#14163A"/>
+            <Setter Property="Foreground" Value="#EDEBFF"/>
+            <Setter Property="RowBackground" Value="#1B1E49"/>
+            <Setter Property="AlternatingRowBackground" Value="#20245A"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="RowHeight" Value="34"/>
+            <Setter Property="ColumnHeaderHeight" Value="38"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#2A2D5F"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderBrush" Value="#2A2D5F"/>
+            <Setter Property="BorderThickness" Value="0,0,1,0"/>
+            <Setter Property="Height" Value="36"/>
+        </Style>
+    </Page.Resources>
+
+    <Grid Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" CornerRadius="20" Background="#1A1D4D" Padding="20" Margin="0,0,0,12">
+            <DockPanel LastChildFill="True">
+                <StackPanel Orientation="Vertical" DockPanel.Dock="Left">
+                    <TextBlock Text="Nhật ký hoạt động" Foreground="White" FontSize="20" FontWeight="SemiBold"/>
+                    <TextBlock Text="Theo dõi thao tác người dùng trong hệ thống" Foreground="#B6B8D6" Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Xuất Excel" Command="{Binding ExportCommand}" Style="{StaticResource PillButton}"/>
+                    <Button Content="Tải dữ liệu" Command="{Binding RefreshCommand}" Style="{StaticResource PillButton}" Margin="8,0,0,0"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Filters + Grid -->
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Filters -->
+            <Border Style="{StaticResource Card}" Grid.Row="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                        <TextBlock Text="Từ ngày" Foreground="#EDEBFF"/>
+                        <DatePicker SelectedDate="{Binding FromDate}" Style="{StaticResource DarkDatePicker}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="0,0,12,0">
+                        <TextBlock Text="Đến ngày" Foreground="#EDEBFF"/>
+                        <DatePicker SelectedDate="{Binding ToDate}" Style="{StaticResource DarkDatePicker}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Margin="0,0,12,0">
+                        <TextBlock Text="Người dùng" Foreground="#EDEBFF"/>
+                        <ComboBox ItemsSource="{Binding Users}"
+                                  SelectedValuePath="UserId"
+                                  DisplayMemberPath="DisplayName"
+                                  SelectedValue="{Binding SelectedUserId}"
+                                  Style="{StaticResource DarkCombo}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="3" Margin="0,0,12,0">
+                        <TextBlock Text="Từ khóa" Foreground="#EDEBFF"/>
+                        <TextBox Text="{Binding Keyword, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource DarkTextBox}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="4" Margin="0,0,12,0">
+                        <TextBlock Text="Số dòng" Foreground="#EDEBFF"/>
+                        <ComboBox ItemsSource="{Binding PageSizeOptions}" SelectedItem="{Binding PageSize}" Width="110" Style="{StaticResource DarkCombo}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="5" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                        <Button Content="Xóa bộ lọc" Command="{Binding ClearFiltersCommand}" Style="{StaticResource PillButton}"/>
+                        <Button Content="Áp dụng" Command="{Binding RefreshCommand}" Style="{StaticResource PillButton}" Margin="8,0,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Grid -->
+            <Border Style="{StaticResource Card}" Grid.Row="1" Padding="0">
+                <Grid>
+                    <DataGrid ItemsSource="{Binding Logs}" Style="{StaticResource GridDark}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Thời gian"
+                                                Binding="{Binding CreatedAt, StringFormat=\{0:dd/MM/yyyy HH:mm:ss\}}"
+                                                Width="160"/>
+                            <DataGridTextColumn Header="Người thực hiện" Binding="{Binding UserDisplayName}" Width="180"/>
+                            <DataGridTextColumn Header="Hành động" Binding="{Binding Action}" Width="120"/>
+                            <DataGridTextColumn Header="Thực thể" Binding="{Binding EntityName}" Width="140"/>
+                            <DataGridTextColumn Header="Mã đối tượng" Binding="{Binding EntityId}" Width="110"/>
+                            <DataGridTextColumn Header="Chi tiết" Binding="{Binding Details}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <!-- Loading overlay -->
+                    <Border Background="#66000000"
+                            Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}"
+                            IsHitTestVisible="{Binding IsLoading}">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <ProgressBar Width="200" Height="6" IsIndeterminate="True"/>
+                            <TextBlock Text="Đang tải dữ liệu..." Foreground="#EDEBFF" FontWeight="SemiBold" Margin="0,12,0,0" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Status -->
+        <Border Grid.Row="2" Background="#14163A" CornerRadius="12" Padding="10" Margin="0,12,0,0">
+            <DockPanel>
+                <TextBlock Text="{Binding TotalItems, StringFormat=Tổng: {0} bản ghi}" Foreground="#EDEBFF" FontWeight="SemiBold"/>
+                <TextBlock Text="{Binding Keyword, StringFormat=   Từ khóa: {0}}" Foreground="#B6B8D6" DockPanel.Dock="Right" HorizontalAlignment="Right"/>
+            </DockPanel>
+        </Border>
+    </Grid>
+</Page>
